@@ -1,0 +1,49 @@
+/* Estilo para las tarjetas */
+.card {
+  border: 1px solid #e3e3e3; /* Borde suave */
+  border-radius: 10px;
+  background-color: #f1e6ff; /* Fondo pastel suave (lavanda claro) */
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.card-img-top {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  object-fit: cover;
+  height: 200px;
+}
+
+.card-body {
+  text-align: center;
+  background-color: #f7f7f7; /* Fondo más claro para el cuerpo de la tarjeta */
+  color: #555; /* Color de texto suave */
+}
+
+/* Estilo para el modal */
+.modal-content {
+  border-radius: 15px;
+  background-color: #fdf6e3; /* Fondo pastel suave (beige claro) */
+  border: 1px solid #ddd; /* Borde suave */
+}
+
+.modal-header, .modal-footer {
+  background-color: #f9e0e0; /* Fondo pastel rosado para el encabezado y pie del modal */
+  color: #333; /* Color de texto oscuro para contraste */
+}
+
+.btn-close {
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #d9534f; /* Rojo suave para el botón de cierre */
+}
+
+img.img-fluid {
+  max-height: 300px;
+  object-fit: contain;
+}

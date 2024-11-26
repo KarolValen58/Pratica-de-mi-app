@@ -1,0 +1,189 @@
+<div class="container mt-5">
+  <h2 class="text-center">Gestión de Cachorros</h2>
+
+  <!-- Botón para abrir modal de crear -->
+  <button class="btn mb-3" (click)="openModal()" style="background-color: #87CEEB; color: white; border: none;">
+    <i class="bi bi-plus-circle"></i> Nuevo Cachorro
+  </button>
+
+  <!-- Barra de búsqueda -->
+  <div class="form-group">
+    <div class="input-group mb-3">
+      <input type="text" 
+             class="form-control" 
+             placeholder="Buscar cachorro por raza" 
+             [(ngModel)]="searchTerm" 
+             (input)="searchPerros()"
+             name="searchTerm">
+      <div class="input-group-append">
+        <button class="btn" type="button" style="background-color: #87CEEB; color: white; border: none;">
+          <i class="bi bi-search"></i> Buscar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de cachorros -->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Raza</th>
+        <th>Dimension Corporal</th>
+        <th>Nivel Energía</th>
+        <th>Edad</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="filteredPerros.length === 0">
+        <td colspan="6" class="text-center">No se encontraron cachorros</td>
+      </tr>
+      <tr *ngFor="let perro of filteredPerros">
+        <td>{{ perro.nombre }}</td>
+        <td>{{ perro.raza }}</td>
+        <td>{{ perro.dimensionCorporal }}</td>
+        <td>{{ perro.nivelEnergia }}/5</td>
+        <td>{{ perro.edad }} años</td>
+        <td>
+          <button class="btn me-2" (click)="openModal(true, perro)" style="background-color: #87CEEB; color: white; border: none;">
+            <i class="bi bi-pencil-square"></i> Editar
+          </button>
+          <button class="btn btn-danger" (click)="deletePerro(perro._id || '')">
+            <i class="bi bi-trash"></i> Eliminar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Modal -->
+  <div class="modal fade show" [ngClass]="{'d-block': showModal}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ modalTitle }}</h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="onSubmit()" #perroForm="ngForm">
+            <div class="row">
+              <!-- Columna izquierda -->
+              <div class="col-md-6">
+                <!-- Campo Nombre -->
+                <div class="form-group mb-3">
+                  <label for="nombre"><i class="bi bi-type"></i> Nombre:</label>
+                  <input type="text" class="form-control" id="nombre" required [(ngModel)]="perro.nombre" name="nombre">
+                </div>
+                
+                <!-- Campo Raza -->
+                <div class="form-group mb-3">
+                  <label for="raza"><i class="bi bi-tag"></i> Raza:</label>
+                  <input type="text" class="form-control" id="raza" required [(ngModel)]="perro.raza" name="raza">
+                </div>
+                
+                <!-- Campo Dimensión Corporal -->
+                <div class="form-group mb-3">
+                  <label for="dimensionCorporal"><i class="bi bi-body-text"></i> Tamaño:</label>
+                  <select class="form-control" id="dimensionCorporal" [(ngModel)]="perro.dimensionCorporal" name="dimensionCorporal">
+                    <option value="Pequeño">Pequeño</option>
+                    <option value="Mediano">Mediano</option>
+                    <option value="Grande">Grande</option>
+                  </select>
+                </div>
+
+                <!-- Campo Nivel de Energía -->
+                <div class="form-group mb-3">
+                  <label for="nivelEnergia"><i class="bi bi-lightning-charge"></i> Nivel de Energía:</label>
+                  <select class="form-control" id="nivelEnergia" [(ngModel)]="perro.nivelEnergia" name="nivelEnergia" required>
+                    <option [ngValue]="1">1 - Muy Tranquilo</option>
+                    <option [ngValue]="2">2 - Tranquilo</option>
+                    <option [ngValue]="3">3 - Moderado</option>
+                    <option [ngValue]="4">4 - Activo</option>
+                    <option [ngValue]="5">5 - Muy Activo</option>
+                  </select>
+                </div>
+                
+                <!-- Campo Descripción -->
+                <div class="form-group mb-3">
+                  <label for="descripcion"><i class="bi bi-card-text"></i> Descripción:</label>
+                  <textarea class="form-control" id="descripcion" required [(ngModel)]="perro.descripcion" name="descripcion" rows="3"></textarea>
+                </div>
+              </div>
+
+              <!-- Columna derecha -->
+              <div class="col-md-6">
+                <!-- Campo Peso -->
+                <div class="form-group mb-3">
+                  <label for="peso"><i class="bi bi-rulers"></i> Peso (kg):</label>
+                  <input type="number" class="form-control" id="peso" 
+                         [(ngModel)]="perro.peso" name="peso" min="0" step="0.1">
+                </div>
+                
+                <!-- Campo Edad -->
+                <div class="form-group mb-3">
+                  <label for="edad"><i class="bi bi-calendar"></i> Edad (años):</label>
+                  <input type="number" class="form-control" id="edad" 
+                         [(ngModel)]="perro.edad" name="edad" min="0">
+                </div>
+                
+                <!-- Campo Color -->
+                <div class="form-group mb-3">
+                  <label for="color"><i class="bi bi-palette"></i> Color:</label>
+                  <input type="text" class="form-control" id="color" 
+                         [(ngModel)]="perro.color" name="color">
+                </div>
+                
+                <!-- Campo URL de Imagen -->
+                <div class="form-group mb-3">
+                  <label for="imagen"><i class="bi bi-image"></i> URL de Imagen:</label>
+                  <input type="text" class="form-control" id="imagen" 
+                         [(ngModel)]="perro.imagen" name="imagen">
+                </div>
+              </div>
+            </div>
+
+            <!-- Sección de Características Especiales (ancho completo) -->
+            <div class="form-group mb-3">
+              <label><i class="bi bi-info-circle"></i> Características Especiales:</label>
+              <div class="input-group mb-2">
+                <input type="text" class="form-control" 
+                       [(ngModel)]="newCaracteristica" 
+                       name="newCaracteristica" 
+                       (keyup.enter)="addCaracteristica()"
+                       placeholder="Ingrese una característica">
+                <button class="btn" type="button" (click)="addCaracteristica()" style="background-color: #87CEEB; color: white; border: none;">
+                  Añadir
+                </button>
+              </div>
+              <!-- Lista de características -->
+              <div *ngIf="perro.caracteristicasEspeciales && perro.caracteristicasEspeciales.length > 0" class="mb-2">
+                <span *ngFor="let caracteristica of perro.caracteristicasEspeciales" 
+                      class="badge bg-secondary me-2 mb-1">
+                  {{ caracteristica }}
+                  <button type="button" class="btn-close btn-close-white ms-1" 
+                          (click)="removeCaracteristica(caracteristica)"></button>
+                </span>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+              <button type="submit" class="btn" style="background-color: #87CEEB; color: white; border: none;">
+                {{ isEditing ? 'Actualizar' : 'Crear' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay del modal -->
+  <div class="modal-backdrop fade show" *ngIf="showModal"></div>
+</div>
+
+<!-- Mensajes de alerta -->
+<div *ngIf="message" class="alert mt-3" [ngClass]="{'alert-success': success, 'alert-danger': !success}">
+  {{ message }}
+</div>

@@ -1,0 +1,93 @@
+<div class="container mt-4">
+    <h2 class="text-center mb-4 text-primary">
+      <i class="fas fa-dog"></i> Lista de Perros
+    </h2>
+  
+    <!-- Barra de búsqueda -->
+    <div class="row mb-4">
+      <div class="col-md-8 mx-auto">
+        <div class="card">
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col">
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-search"></i></span>
+                  <input type="text" 
+                         class="form-control" 
+                         [(ngModel)]="searchTerm" 
+                         placeholder="Buscar por nombre..."
+                         (keyup.enter)="onSearch()">
+                  <button class="btn btn-primary" 
+                          type="button" 
+                          [disabled]="isLoading" 
+                          (click)="onSearch()">
+                    <i class="bi bi-binoculars"></i> Buscar
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <button *ngIf="searchTerm" 
+                        class="btn btn-secondary w-100" 
+                        type="button" 
+                        [disabled]="isLoading" 
+                        (click)="clearSearch()">
+                  <i class="bi bi-x-circle"></i> Limpiar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Mensaje de no resultados -->
+    <div *ngIf="noResults && !isLoading" class="alert alert-info text-center my-4">
+      <i class="bi bi-info-circle"></i> No se encontraron resultados
+    </div>
+  
+    <!-- Resultados -->
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      <div *ngFor="let perro of paginatedPerros" class="col">
+        <div class="card h-100 shadow-sm" data-bs-toggle="modal" data-bs-target="#perroModal" (click)="onPerroSelect(perro)">
+          <img 
+            [src]="perro.imagen || 'assets/default-dog.jpg'" 
+            class="card-img-top" 
+            alt="{{ perro.nombre }}" 
+            onerror="this.src='assets/default-dog.jpg'"
+          >
+          <div class="card-body">
+            <h5 class="card-title">{{ perro.nombre }}</h5>
+            <p class="card-text">{{ perro.descripcion }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Modal -->
+    <div class="modal fade" id="perroModal" tabindex="-1" aria-labelledby="perroModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="perroModalLabel">{{ selectedPerro?.nombre }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <img [src]="selectedPerro?.imagen || 'assets/default-dog.jpg'" 
+                 class="img-fluid rounded mb-3" 
+                 alt="{{ selectedPerro?.nombre }}">
+            <p><strong>Raza:</strong> {{ selectedPerro?.raza }}</p>
+            <p><strong>Tamaño:</strong> {{ selectedPerro?.dimensionCorporal}}</p>
+            <p><strong>Edad:</strong> {{ selectedPerro?.edad }} años</p>
+            <p><strong>Peso:</strong> {{ selectedPerro?.peso }} kg</p>
+            <p><strong>Color:</strong> {{ selectedPerro?.color }}</p>
+            <p><strong>Nivel de Energía:</strong> {{ selectedPerro?.nivelEnergia }}</p>
+            <p><strong>Características Especiales:</strong> {{ selectedPerro?.caracteristicasEspeciales?.join(', ') }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
